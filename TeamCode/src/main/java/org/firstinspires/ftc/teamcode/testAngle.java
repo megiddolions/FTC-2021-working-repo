@@ -9,9 +9,9 @@ public class testAngle extends OpMode {
 
     private Servo servo;
 
-    private double target = 0.93;
+    private static double target = 0.84;
     private boolean moved = false;
-    private static final double default_pos = 0.81;
+    private static final double default_pos = 0.80;
     private boolean last_gamepad1_dpad_up = false;
     private boolean last_gamepad1_dpad_down = false;
 
@@ -30,9 +30,9 @@ public class testAngle extends OpMode {
         }
 
         if (gamepad1.dpad_down && !last_gamepad1_dpad_down) {
-            target -= 0.01;
+            target -= 0.002;
         } else if (gamepad1.dpad_up && !last_gamepad1_dpad_up) {
-            target += 0.01;
+            target += 0.002;
         }
 
         if (!moved) {

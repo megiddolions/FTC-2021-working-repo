@@ -8,8 +8,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Arm extends OpMode {
 
     private Servo servo;
-    private static final double open_pos = 0;
-    private static final double close_pos = 1;
+    private static final double close_pos = 0;
+
+    private static double target = 1;
+    private boolean moved = false;
+    private boolean last_gamepad1_dpad_up = false;
+    private boolean last_gamepad1_dpad_down = false;
 
     @Override
     public void init() {
@@ -19,11 +23,27 @@ public class Arm extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.a) {
-            servo.setPosition(open_pos);
+            moved = true;
         } else if (gamepad1.b) {
+            moved = false;
+        }
+
+        if (moved) {
+            servo.setPosition(target);
+        } else {
             servo.setPosition(close_pos);
         }
+
+        if (gamepad1.dpad_down && !last_gamepad1_dpad_down) {
+            target -= 0.05;
+        } else if (gamepad1.dpad_up && !last_gamepad1_dpad_up) {
+            target += 0.05;
+        }
+
         telemetry.addData("Servo", servo.getPosition());
         telemetry.update();
+
+        last_gamepad1_dpad_up = gamepad1.dpad_up;
+        last_gamepad1_dpad_down = gamepad1.dpad_down;
     }
 }
