@@ -5,6 +5,7 @@ import android.os.Build;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
+/*
 public class Button implements AutoCloseable  {
     private final BooleanSupplier supplier;
     private boolean last;
@@ -42,3 +43,4 @@ public class Button implements AutoCloseable  {
         }
     }
 }
+*/
