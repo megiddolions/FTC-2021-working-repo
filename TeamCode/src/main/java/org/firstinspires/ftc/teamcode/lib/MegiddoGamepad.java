@@ -6,44 +6,39 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  * This class was made by python scripts in IPython 7.15.0
  */
 public class MegiddoGamepad {
-    Gamepad gamepad;
 
-    public MegiddoGamepad(Gamepad gamepad) {
-        this.gamepad = gamepad;
-    }
-
-    public boolean dpad_up = gamepad.dpad_up;
+    public boolean dpad_up = false;
     private boolean _dpad_up = false;
-    public boolean dpad_down = gamepad.dpad_down;
+    public boolean dpad_down = false;
     private boolean _dpad_down = false;
-    public boolean dpad_left = gamepad.dpad_left;
+    public boolean dpad_left = false;
     private boolean _dpad_left = false;
-    public boolean dpad_right = gamepad.dpad_right;
+    public boolean dpad_right = false;
     private boolean _dpad_right = false;
-    public boolean a = gamepad.a;
+    public boolean a = false;
     private boolean _a = false;
-    public boolean b = gamepad.b;
+    public boolean b = false;
     private boolean _b = false;
-    public boolean x = gamepad.x;
+    public boolean x = false;
     private boolean _x = false;
-    public boolean y = gamepad.y;
+    public boolean y = false;
     private boolean _y = false;
-    public boolean guide = gamepad.guide;
+    public boolean guide = false;
     private boolean _guide = false;
-    public boolean start = gamepad.start;
+    public boolean start = false;
     private boolean _start = false;
-    public boolean back = gamepad.back;
+    public boolean back = false;
     private boolean _back = false;
-    public boolean left_bumper = gamepad.left_bumper;
+    public boolean left_bumper = false;
     private boolean _left_bumper = false;
-    public boolean right_bumper = gamepad.right_bumper;
+    public boolean right_bumper = false;
     private boolean _right_bumper = false;
-    public boolean left_stick_button = gamepad.left_stick_button;
+    public boolean left_stick_button = false;
     private boolean _left_stick_button = false;
-    public boolean right_stick_button = gamepad.right_stick_button;
+    public boolean right_stick_button = false;
     private boolean _right_stick_button = false;
 
-    public void update() {
+    public void update(Gamepad gamepad) {
         _dpad_up = dpad_up;
         dpad_up = gamepad.dpad_up;
         _dpad_down = dpad_down;
