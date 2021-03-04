@@ -12,10 +12,7 @@ if __name__ == '__main__':
             try:
                 # print(client_address)
                 while True:
-                    data = client_socket.recv(1024)
-                    if not data:
-                        break
-                    print(data.decode())
+                    client_socket.sendall(input(">>> ").encode())
             except Exception:
                 pass
             client_socket.close()
