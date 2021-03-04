@@ -1,25 +1,44 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.lib.MegiddoGamepad;
 
+import java.io.File;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
+@Disabled
 @TeleOp(name = "Shooter Test", group="Iterative Opmode")
 public class ShooterTest extends OpMode {
 
-    private DcMotor motor;
+    private DcMotor right_motor;
+    private DcMotor left_motor;
     private static double power = 1;
     private static double change_rate = 0.1;
+    private File log;
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat dataFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     MegiddoGamepad Gamepad1;
     MegiddoGamepad Gamepad2;
 
     @Override
     public void init() {
-        motor = hardwareMap.dcMotor.get("TestMotor");
+        right_motor = hardwareMap.dcMotor.get("port0");
+        left_motor = hardwareMap.dcMotor.get("port1");
+
+        right_motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        left_motor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         Gamepad1 = new MegiddoGamepad();
         Gamepad2 = new MegiddoGamepad();
@@ -31,12 +50,18 @@ public class ShooterTest extends OpMode {
         Gamepad2.update(gamepad2);
 
         if (Gamepad1.a_Pressed()) {
-            if (motor.getPower() == 0) {
-                motor.setPower(power);
+            if (right_motor.getPower() == 0) {
+                right_motor.setPower(power);
+                left_motor.setPower(power);
             } else {
-                motor.setPower(0);
+                right_motor.setPower(0);
+                left_motor.setPower(0);
             }
+        } else if (right_motor.getPower() != 0) {
+            right_motor.setPower(power);
+            left_motor.setPower(power);
         }
+
 
         if (Gamepad1.dpad_up_Pressed()) {
             power += change_rate;
@@ -49,9 +74,10 @@ public class ShooterTest extends OpMode {
         } else if (Gamepad1.dpad_right_Pressed()) {
             change_rate /= 2;
         }
-
-        telemetry.addData("power", power);
-        telemetry.addData("change rate", change_rate);
+        telemetry.addData("pos", left_motor.getCurrentPosition());
+        telemetry.addData("time", dataFormatter.format(new Date()));
+        telemetry.addData("power", "%.3f", power);
+        telemetry.addData("change rate", "%.3f", change_rate);
         telemetry.update();
     }
 }
