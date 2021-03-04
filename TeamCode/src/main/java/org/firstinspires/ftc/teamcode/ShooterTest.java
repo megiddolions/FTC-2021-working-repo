@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.annotation.SuppressLint;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,13 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.lib.MegiddoGamepad;
-
-import java.io.File;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Disabled
 @TeleOp(name = "Shooter Test", group="Iterative Opmode")
@@ -25,9 +16,6 @@ public class ShooterTest extends OpMode {
     private DcMotor left_motor;
     private static double power = 1;
     private static double change_rate = 0.1;
-    private File log;
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat dataFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     MegiddoGamepad Gamepad1;
     MegiddoGamepad Gamepad2;
@@ -75,7 +63,6 @@ public class ShooterTest extends OpMode {
             change_rate /= 2;
         }
         telemetry.addData("pos", left_motor.getCurrentPosition());
-        telemetry.addData("time", dataFormatter.format(new Date()));
         telemetry.addData("power", "%.3f", power);
         telemetry.addData("change rate", "%.3f", change_rate);
         telemetry.update();

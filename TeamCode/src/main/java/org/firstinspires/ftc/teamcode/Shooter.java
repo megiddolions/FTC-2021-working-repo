@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.lib.SubsystemBase;
@@ -14,6 +15,10 @@ public class Shooter extends SubsystemBase {
         left = hardwareMap.dcMotor.get("LeftShooter");
         right = hardwareMap.dcMotor.get("RightShooter");
         indexer = hardwareMap.dcMotor.get("IndexMotor");
+
+        right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        indexer.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void set(double power) {
@@ -34,6 +39,22 @@ public class Shooter extends SubsystemBase {
             set(power);
         } else {
             set(0);
+        }
+    }
+
+    public int get_left_encoder() {
+        return left.getCurrentPosition();
+    }
+
+    public int get_right_encoder() {
+        return right.getCurrentPosition();
+    }
+
+    public void toggle_index(double power) {
+        if (indexer.getPower() == 0) {
+            indexer.setPower(power);
+        } else {
+            indexer.setPower(0);
         }
     }
 }
