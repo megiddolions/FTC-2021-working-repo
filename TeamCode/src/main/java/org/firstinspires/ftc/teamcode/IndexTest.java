@@ -16,11 +16,17 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name = "Index Test", group="Iterative Opmode")
 public class IndexTest extends OpMode implements Runnable {
     // UI
+    enum ShooterState {
+        kPower,
+        kVelocity
+    }
+
     private static int option = 0;
     private static double power = 0.5;
     private static double index_speed = 1;
     private static double change_rate = 0.1;
     private static boolean manual_index = false;
+    ShooterState shooterState = ShooterState.kPower;
     // Subsystems
     private ShooterSubsystem shooter;
     // Gamepads
@@ -60,12 +66,12 @@ public class IndexTest extends OpMode implements Runnable {
 
         if (Gamepad1.dpad_down_Pressed()) {
             option++;
-            if (option == 4)
+            if (option == 5)
                 option = 0;
         } else if (Gamepad1.dpad_up_Pressed()) {
             option--;
             if (option == -1)
-                option = 3;
+                option = 4;
         }
 
         if (manual_index) {
@@ -90,6 +96,8 @@ public class IndexTest extends OpMode implements Runnable {
                     break;
                 case 3:
                     change_rate *= 2;
+                case 4:
+                    shooterState = (shooterState == ShooterState.kPower ? ShooterState.kVelocity : ShooterState.kPower);
             }
         } else if (Gamepad1.dpad_right_Pressed()) {
             switch (option) {
@@ -104,14 +112,17 @@ public class IndexTest extends OpMode implements Runnable {
                     break;
                 case 3:
                     change_rate /= 2;
+                case 4:
+                    shooterState = (shooterState == ShooterState.kPower ? ShooterState.kVelocity : ShooterState.kPower);
             }
         }
 
 
-        telemetry.addData((option == 0 ? "* " : "   ") + "power             ", "%.3f", power);
-        telemetry.addData((option == 1 ? "* " : "   ") + "index speed ", "%.3f", index_speed);
+        telemetry.addData((option == 0 ? "* " : "   ") + "power", "%.3f", power);
+        telemetry.addData((option == 1 ? "* " : "   ") + "index speed", "%.3f", index_speed);
         telemetry.addData((option == 2 ? "* " : "   ") + "manual index", manual_index);
-        telemetry.addData((option == 3 ? "* " : "   ") + "change rate ", "%.3f", change_rate);
+        telemetry.addData((option == 3 ? "* " : "   ") + "change rate", "%.3f", change_rate);
+        telemetry.addData((option == 4 ? "* " : "   ") + "shooter mode", shooterState);
         telemetry.update();
     }
 
@@ -119,11 +130,11 @@ public class IndexTest extends OpMode implements Runnable {
     public void run() {
         Socket server;
         DataOutputStream out;
-        DataInputStream in;
+//        DataInputStream in;
         try {
             server = new Socket("192.168.49.72", 5038);
             out = new DataOutputStream(server.getOutputStream());
-            in = new DataInputStream(server.getInputStream());
+//            in = new DataInputStream(server.getInputStream());
 
 
             while (active) {
