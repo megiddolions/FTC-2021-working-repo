@@ -41,7 +41,7 @@ if __name__ == '__main__':
                     if not data:
                         break
                     # convert binary data to time and entries
-                    time, v1, v2 = struct.unpack('dii'[::-1], data[::-1])
+                    time, v1, v2 = struct.unpack('dii'[::-1], data[::-1])[::-1]
                     # add time and data to buffers
                     time_list.append(time)
                     data_list.append((v1, v2))
