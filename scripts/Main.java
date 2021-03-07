@@ -4,7 +4,7 @@ import java.net.*;
 
 class Main {
     public static void main(String[] args) {
-        Socket server;
+        SocketServer server;
         String ip = "localhost";
         int port = 5038;
         try {

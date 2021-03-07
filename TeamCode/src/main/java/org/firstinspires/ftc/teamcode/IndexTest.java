@@ -8,12 +8,17 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.lib.MegiddoGamepad;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 @TeleOp(name = "Index Test", group="Iterative Opmode")
-public class IndexTest extends OpMode {
+public class IndexTest extends OpMode implements Runnable {
     // UI
     private static int option = 0;
     private static double power = 0.5;
@@ -26,9 +31,7 @@ public class IndexTest extends OpMode {
     MegiddoGamepad Gamepad1;
     MegiddoGamepad Gamepad2;
     // Debug
-    File log;
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat dataFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    boolean active = false;
 
     @Override
     public void init() {
@@ -36,6 +39,15 @@ public class IndexTest extends OpMode {
 
         Gamepad1 = new MegiddoGamepad();
         Gamepad2 = new MegiddoGamepad();
+
+        active = true;
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    @Override
+    public void stop() {
+        active = false;
     }
 
     @Override
@@ -105,5 +117,37 @@ public class IndexTest extends OpMode {
         telemetry.addData((option == 2 ? "* " : "   ") + "manual index", manual_index);
         telemetry.addData((option == 3 ? "* " : "   ") + "change rate ", "%.3f", change_rate);
         telemetry.update();
+    }
+
+    @Override
+    public void run() {
+        byte[] bin = new byte[16];
+        Socket server;
+        DataOutputStream out;
+        DataInputStream in;
+        try {
+            server = new Socket("192.168.49.193", 5038);
+            out = new DataOutputStream(server.getOutputStream());
+            in = new DataInputStream(server.getInputStream());
+
+            while (active) {
+
+                ByteBuffer.wrap(bin, 0, 8).putLong((long)(getRuntime() * 1000));
+                ByteBuffer.wrap(bin, 8, 4).putInt(shooter.get_left_encoder());
+                ByteBuffer.wrap(bin, 12, 4).putInt(shooter.get_right_encoder());
+
+                out.write(bin);
+                TimeUnit.MILLISECONDS.sleep(100);
+            }
+
+
+            server.close();
+
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e.toString());
+            telemetry.addData("error", e.toString());
+            telemetry.update();
+        }
     }
 }

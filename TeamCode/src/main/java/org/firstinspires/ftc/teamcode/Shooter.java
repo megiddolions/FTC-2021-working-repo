@@ -19,6 +19,11 @@ public class Shooter extends SubsystemBase {
         right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         indexer.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void set(double power) {
