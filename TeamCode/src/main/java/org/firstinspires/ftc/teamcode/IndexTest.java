@@ -121,23 +121,36 @@ public class IndexTest extends OpMode implements Runnable {
 
     @Override
     public void run() {
-        byte[] bin = new byte[16];
         Socket server;
         DataOutputStream out;
         DataInputStream in;
         try {
-            server = new Socket("192.168.49.193", 5038);
+            server = new Socket("192.168.49.72", 5038);
             out = new DataOutputStream(server.getOutputStream());
             in = new DataInputStream(server.getInputStream());
 
+            double last_time=getRuntime();
+            int last_left_pos=shooter.get_right_encoder();
+            int last_right_pos=shooter.get_right_encoder();
+
+
             while (active) {
+                double time = getRuntime();
+                int left_pos = shooter.get_left_encoder();
+                int right_pos = shooter.get_right_encoder();
 
-                ByteBuffer.wrap(bin, 0, 8).putLong((long)(getRuntime() * 1000));
-                ByteBuffer.wrap(bin, 8, 4).putInt(shooter.get_left_encoder());
-                ByteBuffer.wrap(bin, 12, 4).putInt(shooter.get_right_encoder());
-
-                out.write(bin);
-                TimeUnit.MILLISECONDS.sleep(100);
+                double left_velocity = (left_pos - last_left_pos) / (time - last_time);
+                double right_velocity = (right_pos - last_right_pos) / (time - last_time);
+                out.write(ByteBuffer.allocate(8 + 8 * 3)
+                        .putDouble(time)
+                        .putDouble(left_velocity)
+                        .putDouble(right_velocity)
+                        .putDouble((left_velocity + right_velocity) / 2)
+                        .array());
+                TimeUnit.MILLISECONDS.sleep(50);
+                last_time = time;
+                last_left_pos = left_pos;
+                last_right_pos = right_pos;
             }
 
 
