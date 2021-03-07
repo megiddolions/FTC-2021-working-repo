@@ -133,8 +133,6 @@ public class IndexTest extends OpMode implements Runnable {
         try {
             server = new Socket("192.168.49.72", 5038);
             out = new DataOutputStream(server.getOutputStream());
-//            in = new DataInputStream(server.getInputStream());
-
 
             while (active) {
                 out.write(ByteBuffer.allocate(8 + 8 * 2)
@@ -147,8 +145,6 @@ public class IndexTest extends OpMode implements Runnable {
 
 
             server.close();
-
-
         } catch (IOException | InterruptedException e) {
             System.out.println(e.toString());
             telemetry.addData("error", e.toString());
