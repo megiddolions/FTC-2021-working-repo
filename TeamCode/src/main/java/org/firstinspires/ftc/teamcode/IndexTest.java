@@ -1,20 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.annotation.SuppressLint;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.lib.MegiddoGamepad;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 
 @TeleOp(name = "Index Test", group="Iterative Opmode")
@@ -26,7 +22,7 @@ public class IndexTest extends OpMode implements Runnable {
     private static double change_rate = 0.1;
     private static boolean manual_index = false;
     // Subsystems
-    private Shooter shooter;
+    private ShooterSubsystem shooter;
     // Gamepads
     MegiddoGamepad Gamepad1;
     MegiddoGamepad Gamepad2;
@@ -35,7 +31,7 @@ public class IndexTest extends OpMode implements Runnable {
 
     @Override
     public void init() {
-        shooter = new Shooter(hardwareMap);
+        shooter = new ShooterSubsystem(hardwareMap);
 
         Gamepad1 = new MegiddoGamepad();
         Gamepad2 = new MegiddoGamepad();
@@ -57,8 +53,8 @@ public class IndexTest extends OpMode implements Runnable {
 
         if (Gamepad1.a_Pressed()) {
             shooter.toggle(power);
-        } else if (shooter.get() != 0) {
-            shooter.set(power);
+        } else if (shooter.getPower() != 0) {
+            shooter.setPower(power);
         }
 
 
@@ -129,28 +125,14 @@ public class IndexTest extends OpMode implements Runnable {
             out = new DataOutputStream(server.getOutputStream());
             in = new DataInputStream(server.getInputStream());
 
-            double last_time=getRuntime();
-            int last_left_pos=shooter.get_right_encoder();
-            int last_right_pos=shooter.get_right_encoder();
-
 
             while (active) {
-                double time = getRuntime();
-                int left_pos = shooter.get_left_encoder();
-                int right_pos = shooter.get_right_encoder();
-
-                double left_velocity = (left_pos - last_left_pos) / (time - last_time);
-                double right_velocity = (right_pos - last_right_pos) / (time - last_time);
-                out.write(ByteBuffer.allocate(8 + 8 * 3)
-                        .putDouble(time)
-                        .putDouble(left_velocity)
-                        .putDouble(right_velocity)
-                        .putDouble((left_velocity + right_velocity) / 2)
+                out.write(ByteBuffer.allocate(8 + 8 * 2)
+                        .putDouble(getRuntime())
+                        .putDouble(shooter.getLeftVelocity())
+                        .putDouble(shooter.getRightVelocity())
                         .array());
                 TimeUnit.MILLISECONDS.sleep(50);
-                last_time = time;
-                last_left_pos = left_pos;
-                last_right_pos = right_pos;
             }
 
 
