@@ -4,8 +4,6 @@ import socket
 import struct
 import matplotlib.pyplot as plt
 
-
-PACKET_SIZE = 16
 DATA_SIZE = 100
 
 
@@ -32,19 +30,24 @@ if __name__ == '__main__':
             # reset time and data buffers
             data_list = []
             time_list = []
+
+            vars_count = struct.unpack("i", client_socket.recv(4)[::-1])[0]
+            data_format = 'd' * (1 + vars_count)
+            packet_size = (1 + vars_count) * 8
+
             # for all packets from socket
             while True:
                 try:
                     # get data as binary
-                    data = client_socket.recv(PACKET_SIZE)
+                    data = client_socket.recv(packet_size)
                     # if data length is 0 there is error
                     if not data:
                         break
                     # convert binary data to time and entries
-                    time, v1, v2 = struct.unpack('dii'[::-1], data[::-1])[::-1]
+                    time, v1, v2 = struct.unpack(data_format, data[::-1])[::-1]
                     # add time and data to buffers
                     time_list.append(time)
-                    data_list.append((v1, v2, (v1+v2)/2))
+                    data_list.append((v1, v2))
                     # plot data
                     show(time_list, data_list)
                     # remove old data
